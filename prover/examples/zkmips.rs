@@ -5,7 +5,7 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::ops::Range;
 use std::time::Duration;
-
+use std::time::Instant;
 use plonky2::field::goldilocks_field::GoldilocksField;
 use plonky2::plonk::config::{GenericConfig, PoseidonGoldilocksConfig};
 use plonky2::util::timing::TimingTree;
@@ -258,6 +258,7 @@ fn prove_multi_seg_common(
 
 fn prove_sha2_rust() {
     // 1. split ELF into segs
+let start = Instant::now();
     let elf_path = env::var("ELF_PATH").expect("ELF file is missing");
     let seg_path = env::var("SEG_OUTPUT").expect("Segment output path is missing");
     let seg_size = env::var("SEG_SIZE").unwrap_or("65536".to_string());
@@ -292,6 +293,10 @@ fn prove_sha2_rust() {
     } else {
         prove_multi_seg_common(&seg_path, "", "", "", seg_num, 0).unwrap()
     }
+
+    let end = Instant::now();
+    let elapsed = end.duration_since(start);
+    log::info!("Elapsed time: {:?} secs", elapsed.as_secs());
 }
 
 fn u32_array_to_u8_vec(u32_array: &[u32; 8]) -> Vec<u8> {
@@ -353,9 +358,12 @@ log::info!("****** seg_num: {}***********", seg_num);
 
 fn prove_sha2_precompile() {
     // 1. split ELF into segs
+    let start = Instant::now();
     const D: usize = 2;
     type C = PoseidonGoldilocksConfig;
     type F = <C as GenericConfig<D>>::F;
+
+
 
     let elf_path = env::var("ELF_PATH").expect("ELF file is missing");
     let precompile_path = env::var("PRECOMPILE_PATH").expect("PRECOMPILE ELF file is missing");
@@ -426,6 +434,9 @@ log::info!("****** seg_num: {}***********", seg_num);
     log::info!("verify");
     timing.filter(Duration::from_millis(100)).print();
     all_circuits.verify_root(agg_proof.clone()).unwrap();
+    let end = Instant::now();
+    let elapsed = end.duration_since(start);
+    log::info!("-------Elapsed time: {:?} secs", elapsed.as_secs());
 }
 
 fn prove_sha2_go() {
