@@ -413,7 +413,7 @@ log::info!("****** seg_num: {}***********", seg_num);
     let kernel = segment_kernel("", "", "", seg_reader);
 
     let mut timing = TimingTree::new("prove", log::Level::Info);
-    let (agg_proof, _updated_agg_public_values, receipts_used) = all_circuits
+    let (agg_proof, updated_agg_public_values, receipts_used) = all_circuits
         .prove_root_with_assumption(&all_stark, &kernel, &config, &mut timing, receipts)
         .unwrap();
 
@@ -437,6 +437,33 @@ log::info!("****** seg_num: {}***********", seg_num);
     let end = Instant::now();
     let elapsed = end.duration_since(start);
     log::info!("-------Elapsed time: {:?} secs", elapsed.as_secs());
+
+log::info!("-------save STARK to File --------------");
+    //Gavin
+    let (block_proof, _block_public_values) =
+        all_circuits.prove_block(None, &agg_proof, updated_agg_public_values)?;
+
+    log::info!(
+        "proof size: {:?}",
+        serde_json::to_string(&block_proof.proof).unwrap().len()
+    );
+
+     let build_path = "../verifier/data".to_string();
+    let path = format!("{}/test_circuit/", build_path);
+    let builder = WrapperBuilder::<DefaultParameters, 2>::new();
+    let mut circuit = builder.build();
+    circuit.set_data(all_circuits.block.circuit);
+    let mut bit_size = vec![32usize; 16];
+    bit_size.extend(vec![8; 32]);
+    bit_size.extend(vec![64; 68]);
+    let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
+        circuit,
+        Some((vec![], bit_size)),
+    );
+    log::info!("build finish");
+
+    let wrapped_proof = wrapped_circuit.prove(&block_proof).unwrap();
+    wrapped_proof.save(path).unwrap();
 }
 
 fn prove_sha2_go() {
