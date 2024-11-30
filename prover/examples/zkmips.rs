@@ -387,7 +387,7 @@ fn prove_sha2_precompile() {
     log::info!("private input value: {:?}", private_input);
     state.add_input_stream(&private_input.to_vec());
 
-    let (_total_steps, _seg_num, mut state) = split_prog_into_segs(state, &seg_path, "", 0);
+    let (_total_steps, seg_num, mut state) = split_prog_into_segs(state, &seg_path, "", 0);
 log::info!("****** seg_num: {}***********", seg_num);
     let value = state.read_public_values::<[u8; 32]>();
     log::info!("public value: {:X?}", value);
