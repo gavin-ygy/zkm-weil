@@ -280,6 +280,7 @@ fn prove_sha2_rust() {
     state.add_input_stream(&private_input);
 
     let (_total_steps, seg_num, mut state) = split_prog_into_segs(state, &seg_path, "", seg_size);
+    log::info!("****** seg_num: {}***********", seg_num);
 
     let value = state.read_public_values::<[u8; 32]>();
     log::info!("public value: {:X?}", value);
