@@ -444,12 +444,12 @@ log::info!("****** seg_num: {}***********", seg_num);
 
 log::info!("-------save STARK to File --------------");
     //Gavin
-    let (block_proof, _block_public_values) =
-        all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
+    //let (block_proof, _block_public_values) =
+   //     all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
 
     log::info!(
         "proof size: {:?}",
-        serde_json::to_string(&block_proof.proof).unwrap().len()
+        serde_json::to_string(&agg_proof.proof).unwrap().len()
     );
 
      let build_path = "../verifier/data".to_string();
@@ -460,6 +460,7 @@ log::info!("-------save STARK to File --------------");
     let mut bit_size = vec![32usize; 16];
     bit_size.extend(vec![8; 32]);
     bit_size.extend(vec![64; 68]);
+    log::info!("-------save STARK to File -------111111111-------");
     let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
         circuit,
         Some((vec![], bit_size)),
