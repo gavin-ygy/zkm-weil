@@ -359,6 +359,10 @@ log::info!("****** seg_num: {}***********", seg_num);
 fn prove_sha2_precompile() {
     // 1. split ELF into segs
     let start = Instant::now();
+    type InnerParameters = DefaultParameters;
+    type OuterParameters = Groth16WrapperParameters;
+
+
     const D: usize = 2;
     type C = PoseidonGoldilocksConfig;
     type F = <C as GenericConfig<D>>::F;
