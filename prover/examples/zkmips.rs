@@ -467,7 +467,7 @@ log::info!("-------save STARK to File --------------");
     );
     log::info!("build finish");
 
-    let wrapped_proof = wrapped_circuit.prove(&block_proof).unwrap();
+    let wrapped_proof = wrapped_circuit.prove(&agg_proof).unwrap();
     wrapped_proof.save(path).unwrap();
 }
 
