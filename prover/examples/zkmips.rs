@@ -432,15 +432,15 @@ log::info!("****** seg_num: {}***********", seg_num);
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
                 //Case 1:
-               /* log::info!("-------save STARK to File --------------");
+                log::info!("-------save STARK to File --------------");
 
-                let (block_proof, _block_public_values) =
-                    all_circuits.prove_block(None, &receipt.proof, updated_agg_public_values.to_owned()).unwrap();
+                //let (block_proof, _block_public_values) =
+                //    all_circuits.prove_block(None, &receipt.proof, updated_agg_public_values.to_owned()).unwrap();
 
                 log::info!(
-                    "proof size: {:?}",
-                    serde_json::to_string(&block_proof.proof).unwrap().len()
-                );*/
+                    "1111------proof size: {:?}",
+                    serde_json::to_string(&receipt.proof).unwrap().len()
+                );
             }
             AssumptionReceipt::Unresolved(assumpt) => {
                 log::error!("unresolved assumption: {:X?}", assumpt);
@@ -454,7 +454,11 @@ log::info!("****** seg_num: {}***********", seg_num);
     
 
     //case 2:
-
+    log::info!(
+                    "2222------proof size: {:?}",
+                    serde_json::to_string(&agg_proof.proof).unwrap().len()
+                );
+/*
     log::info!("-------save STARK to File --------------");
 
     let (block_proof, _block_public_values) =
@@ -464,7 +468,7 @@ log::info!("****** seg_num: {}***********", seg_num);
         "proof size: {:?}",
         serde_json::to_string(&block_proof.proof).unwrap().len()
     );
-     
+     */
 }
 
 fn prove_sha2_go() {
