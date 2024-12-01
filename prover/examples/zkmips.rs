@@ -431,8 +431,8 @@ log::info!("****** seg_num: {}***********", seg_num);
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
-                ///
-                log::info!("-------save STARK to File --------------");
+                ///Case 1:
+               /* log::info!("-------save STARK to File --------------");
 
                 let (block_proof, _block_public_values) =
                     all_circuits.prove_block(None, &receipt.proof, updated_agg_public_values.to_owned()).unwrap();
@@ -440,7 +440,7 @@ log::info!("****** seg_num: {}***********", seg_num);
                 log::info!(
                     "proof size: {:?}",
                     serde_json::to_string(&block_proof.proof).unwrap().len()
-                );
+                );*/
             }
             AssumptionReceipt::Unresolved(assumpt) => {
                 log::error!("unresolved assumption: {:X?}", assumpt);
@@ -453,7 +453,9 @@ log::info!("****** seg_num: {}***********", seg_num);
     all_circuits.verify_root(agg_proof.clone()).unwrap();
     
 
-   /* log::info!("-------save STARK to File --------------");
+    //case 2:
+
+    log::info!("-------save STARK to File --------------");
 
     let (block_proof, _block_public_values) =
         all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
@@ -462,24 +464,7 @@ log::info!("****** seg_num: {}***********", seg_num);
         "proof size: {:?}",
         serde_json::to_string(&block_proof.proof).unwrap().len()
     );
-    let result = all_circuits.verify_block(&block_proof);
-
-    let build_path = "../verifier/data".to_string();
-    let path = format!("{}/test_circuit/", build_path);
-    let builder = WrapperBuilder::<DefaultParameters, 2>::new();
-    let mut circuit = builder.build();
-    circuit.set_data(all_circuits.block.circuit);
-    let mut bit_size = vec![32usize; 16];
-    bit_size.extend(vec![8; 32]);
-    bit_size.extend(vec![64; 68]);
-    let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
-        circuit,
-        Some((vec![], bit_size)),
-    );
-    log::info!("build finish");
-
-    let wrapped_proof = wrapped_circuit.prove(&block_proof).unwrap();
-    wrapped_proof.save(path).unwrap(); */
+     
 }
 
 fn prove_sha2_go() {
