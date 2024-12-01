@@ -358,7 +358,7 @@ log::info!("****** seg_num: {}***********", seg_num);
 
 fn prove_sha2_precompile() {
     // 1. split ELF into segs
-    let start = Instant::now();
+    //let start = Instant::now();
     type InnerParameters = DefaultParameters;
     type OuterParameters = Groth16WrapperParameters;
 
@@ -431,6 +431,16 @@ log::info!("****** seg_num: {}***********", seg_num);
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
+                ///
+                log::info!("-------save STARK to File --------------");
+
+                let (block_proof, _block_public_values) =
+                    all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
+
+                log::info!(
+                    "proof size: {:?}",
+                    serde_json::to_string(&block_proof.proof).unwrap().len()
+                );
             }
             AssumptionReceipt::Unresolved(assumpt) => {
                 log::error!("unresolved assumption: {:X?}", assumpt);
@@ -443,7 +453,7 @@ log::info!("****** seg_num: {}***********", seg_num);
     all_circuits.verify_root(agg_proof.clone()).unwrap();
     
 
-    log::info!("-------save STARK to File --------------");
+   /* log::info!("-------save STARK to File --------------");
 
     let (block_proof, _block_public_values) =
         all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
@@ -469,7 +479,7 @@ log::info!("****** seg_num: {}***********", seg_num);
     log::info!("build finish");
 
     let wrapped_proof = wrapped_circuit.prove(&block_proof).unwrap();
-    wrapped_proof.save(path).unwrap();
+    wrapped_proof.save(path).unwrap(); */
 }
 
 fn prove_sha2_go() {
