@@ -473,7 +473,7 @@ log::info!("****** seg_num: {}***********", seg_num);
 
      log::info!(
                     "1111------proof size: {:?}",
-                    serde_json::to_string(&recpt_out.unwrap().proof).unwrap().len()
+                    serde_json::to_string(&recpt_out.as_ref().unwrap().proof).unwrap().len()
                 );
     let build_path = "../verifier/data".to_string();
     let path = format!("{}/test_circuit/", build_path);
