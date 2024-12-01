@@ -441,6 +441,23 @@ log::info!("****** seg_num: {}***********", seg_num);
                     "1111------proof size: {:?}",
                     serde_json::to_string(&receipt.proof).unwrap().len()
                 );
+                let build_path = "../verifier/data".to_string();
+                let path = format!("{}/test_circuit/", build_path);
+                let builder = WrapperBuilder::<DefaultParameters, 2>::new();
+                let mut circuit = builder.build();
+                circuit.set_data(all_circuits.block.circuit);
+                let mut bit_size = vec![32usize; 16];
+                bit_size.extend(vec![8; 32]);
+                bit_size.extend(vec![64; 68]);
+                let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
+                    circuit,
+                    Some((vec![], bit_size)),
+                );
+                log::info!("build finish");
+
+                let wrapped_proof = wrapped_circuit.prove(&receipt).unwrap();
+                wrapped_proof.save(path).unwrap();
+                //
             }
             AssumptionReceipt::Unresolved(assumpt) => {
                 log::error!("unresolved assumption: {:X?}", assumpt);
