@@ -455,7 +455,7 @@ log::info!("****** seg_num: {}***********", seg_num);
                 );
                 log::info!("build finish");
 
-                let wrapped_proof = wrapped_circuit.prove(&receipt).unwrap();
+                let wrapped_proof = wrapped_circuit.prove(&receipt.proof).unwrap();
                 wrapped_proof.save(path).unwrap();
                 //
             }
