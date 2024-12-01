@@ -424,8 +424,10 @@ log::info!("****** seg_num: {}***********", seg_num);
     log::info!("Process assumptions");
     timing = TimingTree::new("prove aggression", log::Level::Info);
 
+    let mut index = 0;
     for assumption in receipts_used.borrow_mut().iter_mut() {
         let receipt = assumption.1.clone();
+        index += 1 ;
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
@@ -435,7 +437,7 @@ log::info!("****** seg_num: {}***********", seg_num);
             }
         }
     }
-    log::info!("-------receipts_used：size is {}", receipts_used.len());
+    log::info!("-------receipts_used：cycles is {}", index);
     log::info!("verify");
     timing.filter(Duration::from_millis(100)).print();
     all_circuits.verify_root(agg_proof.clone()).unwrap();
