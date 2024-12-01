@@ -433,7 +433,7 @@ log::info!("****** seg_num: {}***********", seg_num);
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
-                recpt_out = Some(*receipt);
+                recpt_out = Some(Box::new(*receipt);
                 //Case 1:
                 log::info!("-------save STARK to File --------------");
 
