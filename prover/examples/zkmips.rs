@@ -433,7 +433,7 @@ log::info!("****** seg_num: {}***********", seg_num);
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
-                recpt_out = *receipt;
+                recpt_out = Some(*receipt);
                 //Case 1:
                 log::info!("-------save STARK to File --------------");
 
@@ -473,7 +473,7 @@ log::info!("****** seg_num: {}***********", seg_num);
 
      log::info!(
                     "1111------proof size: {:?}",
-                    serde_json::to_string(&recpt_out.proof).unwrap().len()
+                    serde_json::to_string(&recpt_out.unwrap().proof).unwrap().len()
                 );
     let build_path = "../verifier/data".to_string();
     let path = format!("{}/test_circuit/", build_path);
@@ -490,7 +490,7 @@ log::info!("****** seg_num: {}***********", seg_num);
         );
         log::info!("build finish");
 
-        let wrapped_proof = wrapped_circuit.prove(&recpt_out.proof).unwrap();
+        let wrapped_proof = wrapped_circuit.prove(&recpt_out.unwrap().proof).unwrap();
         wrapped_proof.save(path).unwrap();
 }
 
