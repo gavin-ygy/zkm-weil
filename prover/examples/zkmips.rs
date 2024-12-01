@@ -445,7 +445,7 @@ log::info!("****** seg_num: {}***********", seg_num);
                 let path = format!("{}/test_circuit/", build_path);
                 let builder = WrapperBuilder::<DefaultParameters, 2>::new();
                 let mut circuit = builder.build();
-                circuit.set_data(all_circuits.block.circuit.to_owned());
+                circuit.set_data(&all_circuits.block.circuit);
                 let mut bit_size = vec![32usize; 16];
                 bit_size.extend(vec![8; 32]);
                 bit_size.extend(vec![64; 68]);
