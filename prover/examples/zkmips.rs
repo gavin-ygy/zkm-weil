@@ -425,7 +425,7 @@ log::info!("****** seg_num: {}***********", seg_num);
     timing = TimingTree::new("prove aggression", log::Level::Info);
 
     let mut index = 0;
-    let mut recpt_out: Receipt<F, C, D>;
+    let mut recpt_out: Option<Box<Receipt<F, C, D>>> = None;
 
     for assumption in receipts_used.borrow_mut().iter_mut() {
         let receipt = assumption.1.clone();
