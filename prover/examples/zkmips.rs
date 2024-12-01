@@ -435,7 +435,7 @@ log::info!("****** seg_num: {}***********", seg_num);
                 log::info!("-------save STARK to File --------------");
 
                 let (block_proof, _block_public_values) =
-                    all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
+                    all_circuits.prove_block(None, &receipt.proof, updated_agg_public_values).unwrap();
 
                 log::info!(
                     "proof size: {:?}",
