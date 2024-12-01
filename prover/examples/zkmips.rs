@@ -425,39 +425,22 @@ log::info!("****** seg_num: {}***********", seg_num);
     timing = TimingTree::new("prove aggression", log::Level::Info);
 
     let mut index = 0;
+    let mut recpt_out: Receipt<F, C, D>;
+
     for assumption in receipts_used.borrow_mut().iter_mut() {
         let receipt = assumption.1.clone();
         index += 1 ;
         match receipt {
             AssumptionReceipt::Proven(receipt) => {
                 all_circuits.verify_root(receipt.proof.clone()).unwrap();
+                recpt_out = receipt;
                 //Case 1:
                 log::info!("-------save STARK to File --------------");
 
                 //let (block_proof, _block_public_values) =
                 //    all_circuits.prove_block(None, &receipt.proof, updated_agg_public_values.to_owned()).unwrap();
 
-                log::info!(
-                    "1111------proof size: {:?}",
-                    serde_json::to_string(&receipt.proof).unwrap().len()
-                );
-                let build_path = "../verifier/data".to_string();
-                let path = format!("{}/test_circuit/", build_path);
-                let builder = WrapperBuilder::<DefaultParameters, 2>::new();
-                let mut circuit = builder.build();
-                all_circuits_c = all_circuits.clone();
-                circuit.set_data(all_circuits_c.block.circuit);
-                let mut bit_size = vec![32usize; 16];
-                bit_size.extend(vec![8; 32]);
-                bit_size.extend(vec![64; 68]);
-                let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
-                    circuit,
-                    Some((vec![], bit_size)),
-                );
-                log::info!("build finish");
-
-                let wrapped_proof = wrapped_circuit.prove(&receipt.proof).unwrap();
-                wrapped_proof.save(path).unwrap();
+                
                 //
             }
             AssumptionReceipt::Unresolved(assumpt) => {
@@ -487,6 +470,28 @@ log::info!("****** seg_num: {}***********", seg_num);
         serde_json::to_string(&block_proof.proof).unwrap().len()
     );
      */
+
+     log::info!(
+                    "1111------proof size: {:?}",
+                    serde_json::to_string(&recpt_out.proof).unwrap().len()
+                );
+    let build_path = "../verifier/data".to_string();
+    let path = format!("{}/test_circuit/", build_path);
+    let builder = WrapperBuilder::<DefaultParameters, 2>::new();
+    let mut circuit = builder.build();
+
+    circuit.set_data(all_circuits.block.circuit);
+    let mut bit_size = vec![32usize; 16];
+    bit_size.extend(vec![8; 32]);
+    bit_size.extend(vec![64; 68]);
+    let wrapped_circuit = WrappedCircuit::<InnerParameters, OuterParameters, D>::build(
+                    circuit,
+                    Some((vec![], bit_size)),
+        );
+        log::info!("build finish");
+
+        let wrapped_proof = wrapped_circuit.prove(&recpt_out.proof).unwrap();
+        wrapped_proof.save(path).unwrap();
 }
 
 fn prove_sha2_go() {
