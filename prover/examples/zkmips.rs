@@ -435,17 +435,16 @@ log::info!("****** seg_num: {}***********", seg_num);
             }
         }
     }
+    log::info!("-------receipts_used：size is {}", receipts_used.len());
     log::info!("verify");
     timing.filter(Duration::from_millis(100)).print();
     all_circuits.verify_root(agg_proof.clone()).unwrap();
-    let end = Instant::now();
-    let elapsed = end.duration_since(start);
-    log::info!("-------Elapsed time: {:?} secs", elapsed.as_secs());
+    
 
-log::info!("-------save STARK to File --------------");
-    //Gavin
-    //let (block_proof, _block_public_values) =
-   //     all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
+    log::info!("-------save STARK to File --------------");
+
+    let (block_proof, _block_public_values) =
+        all_circuits.prove_block(None, &agg_proof, updated_agg_public_values).unwrap();
 
     log::info!(
         "proof size: {:?}",
